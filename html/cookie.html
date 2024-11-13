@@ -3,31 +3,30 @@
 <head>
  <meta charset="utf-8" />
  <meta name="viewport" content="width=device-width,initial-scale=1" />
- <title>Julia CGI index</title>
+ <title>Julia Cookie</title>
  <!-- BootstrapのCSS読み込み -->
  <link href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
  <style>
+  .message {
+    padding:6px;
+    text-align:center;
+    font-size:larger;
+    color:magenta;
+  }
  </style>
 </head>
 
 <body>
  <!-- ヘッダー -->
  <header class="container">
-  <h1 class="text-center p-5 border border-primary rounded bg-light">Julia CGI</h1>
+  <h1 class="text-center p-5 border border-warning rounded bg-light">Julia Cookie</h1>
   <p class="text-center"><a href="index.cgi">HOME</a></p>
  </header>
 
  <!-- 本文 -->
  <article class="container">
-   <section class="row mt-5">
-    <ul class="ms-5">
-     <li><a href="get_form.cgi">Form (GET)</a></li>
-     <li><a href="post_form.cgi">Form (POST)</a></li>
-     <li><a href="web_service.cgi">Web Service (JSON)</a></li>
-     <li><a href="cookie.cgi">Cookie</a></li>
-    </ul>
-    <p>{{message}}</p>
-   </section>
+   <p><a href="javascript:location.reload()">Reload</a></p>
+   <p class="message">Count = {{count}}</p>
  </article>
  
  <!-- フッター -->

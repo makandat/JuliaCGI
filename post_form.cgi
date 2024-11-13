@@ -1,4 +1,4 @@
-#!C:\Apps\Julia\bin\julia.exe
+#!c:/Julia/bin/julia.exe
 
 include("./CGI.jl")
 using .CGI
@@ -18,6 +18,7 @@ function on_POST()
   select1 = getParam(params, "select1")
   embed = Dict{String, String}()
   embed["message"] = "text1:'$text1', check1:$check1, select1:'$select1'"
+  info(embed["message"])
   sendHtml("./html/post_form.html", embed)  
 end
 

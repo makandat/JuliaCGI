@@ -1,10 +1,11 @@
+# v1.0.2
 module CGI
-export method, sendText, sendHtml, sendJson, isQuery, parseQuery, getParam, getCheck, getCookie, setCookie
+export method, sendText, sendHtml, sendJson, isQuery, parseQuery, getParam, getCheck, getCookie, setCookie, info # v1.0.1
 
-# 簡易ログ
+# 簡易ログ v1.0.1
 function info(message)
-  io = open("./log.txt", "w+")
-  writeline(io, message)
+  io = open("./info.txt", "a")
+  println(io, message)
   close(io)
 end
 
@@ -13,9 +14,14 @@ function method()
   return ENV["REQUEST_METHOD"]
 end
 
-# クエリーパラメータがあるか？
+# クエリーパラメータがあるか？ v1.0.2
 function isQuery()
-  return ENV["QUERY_STRING"] != ""
+  if haskey(ENV, "QUERY_STRING")
+    n = length(ENV["QUERY_STRING"])
+    return n > 0
+  else
+    return false
+  end
 end
 
 # 文字列を応答として返す。
@@ -23,17 +29,19 @@ function sendText(text, mime="text/plain", status="200 OK", cookie="")
   buff = "Status: $status\n"
   buff *= "Content-Type: "
   buff *= mime
+  buff *= "\n"
   if cookie != ""
-    buff *= cookie * "\n"
+    buff *= cookie
+    buff *= "\n"
   end
-  buff *= "\n\n"
+  buff *= "\n"
   buff *= text
   print(buff)
 end
 
 
-# HTML ファイルを応答として返す。
-function sendHtml(filepath, embed=nothing)
+# HTML ファイルを応答として返す。v1.0.2
+function sendHtml(filepath, embed=nothing, status="200 OK", cookie="")
   io = open(filepath, "r")
   s = read(io, String)
   close(io)
@@ -42,17 +50,19 @@ function sendHtml(filepath, embed=nothing)
       s = replace(s, "{{$key}}" => value)
     end
   end
-  sendText(s, "text/html")
+  sendText(s, "text/html", status, cookie)
 end
 
 
-# データを JSON で応答として返す。
+# データを JSON で応答として返す。 v1.0.2
+#   (注意) CGI ではユーザが異なるため JSON モジュールが使えない。
 function sendJson(data)
   s = "{"
-  for (key, value) in pairs(data)
+  for key in keys(data)
+    value = data[key]
     s *= "\"$key\":\"$value\","
   end
-  s = rstrip(s, ',')
+  s = strip(s, [','])
   s *= "}"
   sendText(s, "application/json")
 end
@@ -61,11 +71,11 @@ end
 function parseQuery()
   data = ""
   if method() == "POST"
-    data = readline(stdin)
+    #data = String(read(stdin::IO))
+    data = readline()
   else
     data = ENV["QUERY_STRING"]
   end
-  info(data)
   hash = Dict()
   parts = split(data, "&")
   for part in parts
@@ -93,7 +103,11 @@ end
 
 # リクエストクッキーを取得する。
 function getCookie(name, default="")
-  cookie = ENV["HTTP_COOKIE"]
+  if haskey(ENV, "HTTP_COOKIE")
+    cookie = ENV["HTTP_COOKIE"]
+  else
+    return default
+  end
   parts = split(cookie, "; ")
   for e in parts
     kv = split(e, "=")

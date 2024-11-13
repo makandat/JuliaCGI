@@ -1,4 +1,4 @@
-#!C:\Apps\Julia\bin\julia.exe
+#!c:/Julia/bin/julia.exe
 #!/home/makandat/bin/julia-1.9.3/bin/julia
 
 include("./CGI.jl")
